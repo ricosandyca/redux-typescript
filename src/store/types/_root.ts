@@ -1,11 +1,6 @@
 import {
-  PostActionTypes,
-  PostState
+  PostActionTypes
 } from './post'
 
 export type RootActions =
   PostActionTypes
-
-export type RootStates = {
-  post: PostState
-}
