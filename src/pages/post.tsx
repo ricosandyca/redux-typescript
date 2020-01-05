@@ -4,25 +4,35 @@ import { compose, Dispatch } from 'redux'
 import { connect } from 'react-redux'
 
 import {
-  createPost,
-  updatePost,
   deletePost
 } from '../store/actions/post'
 
 import { RootState } from '../store/reducers'
-import { PostState } from '../store/types/post'
 import { RootActions } from '../store/types/_root'
 
-type TProps = {
-  post: PostState
-}
+const mapStateToProps = ({ post }: RootState) => ({ post })
+const mapDispatchToProps = (dispatch: Dispatch<RootActions>) => ({
+  deletePost: (id: string) => dispatch(deletePost(id))
+})
+
+type TProps =
+  ReturnType<typeof mapStateToProps> &
+  ReturnType<typeof mapDispatchToProps>
 
 class Post extends React.Component<TProps> {
   render () {
-    const { posts } = this.props.post
+    const { post: { posts }, deletePost } = this.props
 
     return (
       <div className='container'>
+        <br />
+        <div>
+          <Link to='/posts/add'>
+            <button className='button is-link'>
+              Create
+            </button>
+          </Link>
+        </div>
         <br />
         {
           posts.map(post => (
@@ -36,7 +46,10 @@ class Post extends React.Component<TProps> {
                     </button>
                   </Link>
                   &nbsp;&nbsp;
-                  <button className='button is-danger' id={`btn-delete-post-${post.id}`}>
+                  <button
+                    className='button is-danger'
+                    id={`btn-delete-post-${post.id}`}
+                    onClick={() => deletePost(post.id)}>
                     Delete
                   </button>
                 </div>
@@ -49,11 +62,6 @@ class Post extends React.Component<TProps> {
     )
   }
 }
-
-const mapStateToProps = ({ post }: RootState) => ({ post })
-const mapDispatchToProps = (dispatch: Dispatch<RootActions>) => ({
-  deletePost: (id: string) => dispatch(deletePost(id))
-})
 
 export default compose(
   connect(mapStateToProps, mapDispatchToProps)

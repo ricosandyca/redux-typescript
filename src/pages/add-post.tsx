@@ -2,52 +2,35 @@ import React from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import { compose, Dispatch } from 'redux'
 import { connect } from 'react-redux'
+import uuid from 'uuid/v1'
 
 import {
-  updatePost
+  createPost
 } from '../store/actions/post'
 
-import { Post } from '../store/types/post'
-import { RootState } from '../store/reducers'
 import { RootActions } from '../store/types/_root'
+import { Post } from '../store/types/post'
 
-const mapStateToProps = ({ post }: RootState) => ({ post })
 const mapDispatchToProps = (dispatch: Dispatch<RootActions>) => ({
-  updatePost: (id: string, post: Post) => dispatch(updatePost(id, post))
+  createPost: (post: Post) => dispatch(createPost(post))
 })
 
-type RouteParams = {
-  id: string
-}
-
-type TProps =
-  RouteComponentProps<RouteParams> &
-  ReturnType<typeof mapStateToProps> &
-  ReturnType<typeof mapDispatchToProps>
-
-type TState = RouteParams & {
+type TState = {
   input: {
     title: string
     content: string
   }
 }
 
-class EditPost extends React.Component<TProps, TState> {
-  constructor (props: TProps) {
-    super(props)
+type TProps =
+  RouteComponentProps &
+  ReturnType<typeof mapDispatchToProps>
 
-    const currentPost = this
-      .props
-      .post
-      .posts
-      .find(({ id }) => id === props.match.params.id)
-
-    this.state = {
-      ...props.match.params,
-      input: {
-        title: currentPost?.title || '',
-        content: currentPost?.content || ''
-      }
+class AddPost extends React.Component<TProps, TState> {
+  state = {
+    input: {
+      title: '',
+      content: ''
     }
   }
 
@@ -62,9 +45,11 @@ class EditPost extends React.Component<TProps, TState> {
 
   handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    const { id } = this.state
-    const post: Post = { id, ...this.state.input}
-    this.props.updatePost(id, post)
+    const post: Post = {
+      id: uuid(),
+      ...this.state.input
+    }
+    this.props.createPost(post)
     this.props.history.push('/posts')
   }
 
@@ -100,7 +85,7 @@ class EditPost extends React.Component<TProps, TState> {
             </div>
           </div>
           <button className='button is-primary'>
-            Update
+            Create
           </button>
         </form>
       </div>
@@ -109,5 +94,5 @@ class EditPost extends React.Component<TProps, TState> {
 }
 
 export default compose(
-  connect(mapStateToProps, mapDispatchToProps)
-)(EditPost)
+  connect(null, mapDispatchToProps)
+)(AddPost)

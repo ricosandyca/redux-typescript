@@ -12,7 +12,8 @@ import store from './store'
 import {
   home as HomePage,
   post as PostPage,
-  editPost as EditPostPage
+  editPost as EditPostPage,
+  addPost as AddPostPage
 } from './pages'
 import {
   notfound as NotFoundPage
@@ -29,6 +30,7 @@ const App: React.FC = () => {
           <Route exact path='/' component={HomePage}/>
           <Route exact path='/posts' component={PostPage}/>
           <Route path='/posts/edit/:id' component={EditPostPage} />
+          <Route exact path='/posts/add' component={AddPostPage}/>
           <Route component={NotFoundPage}/>
         </Switch>
       </Router>

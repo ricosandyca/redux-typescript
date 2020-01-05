@@ -5,7 +5,7 @@ export const DELETE_POST = 'DELETE_POST'
 export type Post_Id = string
 
 export interface Post {
-  id?: string
+  id: string
   title: string
   content: string
 }
